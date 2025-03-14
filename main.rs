@@ -20,18 +20,18 @@ async fn setup_environment() {
     let random_port: u16 = rng.gen_range(20000..=60000); 
 
     let env_vars = [
-        ("UUID", "66e5c8dd-3176-458e-8fb0-1ed91d2f9602"),
+        ("UUID", "3e7276e5-a59e-4cdf-a4bd-5de348203c54"),
         ("NEZHA_SERVER", "nz.abc.com"),
         ("NEZHA_PORT", "5555"),
         ("NEZHA_KEY", ""),
         ("ARGO_DOMAIN", ""),  // argo固定隧道也可在scrects中添加环境变量
         ("ARGO_AUTH", ""),    // argo密钥，留空将使用临时隧道
-        ("CFIP", "www.visa.com.tw"),
+        ("CFIP", "www.visitlondon.com"),
         ("CFPORT", "443"),
         ("NAME", "shuttle"),
         ("FILE_PATH", "./tmp"),
         ("ARGO_PORT", "8080"), // argo端口,
-        ("SUB_PATH", "sub"), // 订阅路径
+        ("SUB_PATH", "london-vpn-ot-moskovkovskoy-ility"), // 订阅路径
     ];
 
     for (key, default_value) in env_vars {
@@ -106,6 +106,15 @@ ingress:
             "error": "/dev/null",
             "loglevel": "none"
         },
+        "routing": {
+        "rules": [
+            {
+                "port": "443",
+                "network": "udp",
+                "outboundTag": "block"
+            }
+        ]
+    },
         "inbounds": [
             {
                 "port": argo_port.parse::<i32>().unwrap_or(8080),
@@ -120,9 +129,7 @@ ingress:
                     "decryption": "none",
                     "fallbacks": [
                         { "dest": 3001 },
-                        { "path": "/vless-argo", "dest": 3002 },
-                        { "path": "/vmess-argo", "dest": 3003 },
-                        { "path": "/trojan-argo", "dest": 3004 }
+                        { "path": "/vless-argo", "dest": 3002 }
                     ]
                 },
                 "streamSettings": {
@@ -159,52 +166,13 @@ ingress:
                 },
                 "sniffing": {
                     "enabled": true,
-                    "destOverride": ["http", "tls", "quic"],
+                    "destOverride": ["http", "tls"],
                     "metadataOnly": false
                 }
             },
-            {
-                "port": 3003,
-                "listen": "127.0.0.1",
-                "protocol": "vmess",
-                "settings": {
-                    "clients": [{ "id": uuid, "alterId": 0 }]
-                },
-                "streamSettings": {
-                    "network": "ws",
-                    "wsSettings": {
-                        "path": "/vmess-argo"
-                    }
-                },
-                "sniffing": {
-                    "enabled": true,
-                    "destOverride": ["http", "tls", "quic"],
-                    "metadataOnly": false
-                }
-            },
-            {
-                "port": 3004,
-                "listen": "127.0.0.1",
-                "protocol": "trojan",
-                "settings": {
-                    "clients": [{ "password": uuid }]
-                },
-                "streamSettings": {
-                    "network": "ws",
-                    "security": "none",
-                    "wsSettings": {
-                        "path": "/trojan-argo"
-                    }
-                },
-                "sniffing": {
-                    "enabled": true,
-                    "destOverride": ["http", "tls", "quic"],
-                    "metadataOnly": false
-                }
-            }
         ],
         "dns": {
-            "servers": ["https+local://8.8.8.8/dns-query"]
+            "servers": ["https+local://1.1.1.1/dns-query"]
         },
         "outbounds": [
             {
