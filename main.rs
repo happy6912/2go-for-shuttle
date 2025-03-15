@@ -31,7 +31,7 @@ async fn setup_environment() {
         ("NAME", "shuttle"),
         ("FILE_PATH", "./tmp"),
         ("ARGO_PORT", "8080"), // argo端口,
-        ("SUB_PATH", "london-vpn-ot-moskovkovskoy-ility"), // 订阅路径
+        ("SUB_PATH", "london"), // 订阅路径
     ];
 
     for (key, default_value) in env_vars {
