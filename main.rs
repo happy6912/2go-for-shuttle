@@ -213,7 +213,7 @@ ingress:
             }
         ],
         "dns": {
-            "servers": ["https+local://1.1.1.1/dns-query"]
+            "servers": ["https+local://8.8.8.8/dns-query"]
         },
         "outbounds": [
             {
