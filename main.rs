@@ -129,7 +129,9 @@ ingress:
                     "decryption": "none",
                     "fallbacks": [
                         { "dest": 3001 },
-                        { "path": "/vless-argo", "dest": 3002 }
+                        { "path": "/vless-argo", "dest": 3002 },
+                        { "path": "/vmess-argo", "dest": 3003 },
+                        { "path": "/trojan-argo", "dest": 3004 }
                     ]
                 },
                 "streamSettings": {
@@ -170,6 +172,45 @@ ingress:
                     "metadataOnly": false
                 }
             },
+            {
+                "port": 3003,
+                "listen": "127.0.0.1",
+                "protocol": "vmess",
+                "settings": {
+                    "clients": [{ "id": uuid, "alterId": 0 }]
+                },
+                "streamSettings": {
+                    "network": "ws",
+                    "wsSettings": {
+                        "path": "/vmess-argo"
+                    }
+                },
+                "sniffing": {
+                    "enabled": true,
+                    "destOverride": ["http", "tls"],
+                    "metadataOnly": false
+                }
+            },
+            {
+                "port": 3004,
+                "listen": "127.0.0.1",
+                "protocol": "trojan",
+                "settings": {
+                    "clients": [{ "password": uuid }]
+                },
+                "streamSettings": {
+                    "network": "ws",
+                    "security": "none",
+                    "wsSettings": {
+                        "path": "/trojan-argo"
+                    }
+                },
+                "sniffing": {
+                    "enabled": true,
+                    "destOverride": ["http", "tls"],
+                    "metadataOnly": false
+                }
+            }
         ],
         "dns": {
             "servers": ["https+local://1.1.1.1/dns-query"]
