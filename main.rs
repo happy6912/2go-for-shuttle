@@ -17,13 +17,13 @@ async fn hello_world() -> &'static str {
 async fn setup_environment() {
 
     let env_vars = [
-        ("UUID", "66e5c8dd-3176-458e-8fb0-1ed91d2f9602"),
+        ("UUID", "3e7276e5-a59e-4cdf-a4bd-5de348203c54"),
         ("NEZHA_SERVER", "nz.abc.com"),
         ("NEZHA_PORT", "5555"),
         ("NEZHA_KEY", ""),
         ("ARGO_DOMAIN", ""),  // argo固定隧道也可在scrects中添加环境变量
         ("ARGO_AUTH", ""),    // argo密钥，留空将使用临时隧道
-        ("CFIP", "www.visa.com.tw"),
+        ("CFIP", "www.visitlondon.com"),
         ("CFPORT", "443"),
         ("NAME", "shuttle"),
         ("FILE_PATH", "./tmp"),
@@ -103,6 +103,19 @@ ingress:
             "error": "/dev/null",
             "loglevel": "none"
         },
+        "dns": {
+    "servers": ["https+local://1.1.1.1/dns-query"],
+    "queryStrategy": "UseIPv4"
+  },
+        "routing": {
+        "rules": [
+            {
+                "port": "443",
+                "network": "udp",
+                "outboundTag": "block"
+            }
+        ]
+    },
         "inbounds": [
             {
                 "port": argo_port.parse::<i32>().unwrap_or(8080),
@@ -156,7 +169,7 @@ ingress:
                 },
                 "sniffing": {
                     "enabled": true,
-                    "destOverride": ["http", "tls", "quic"],
+                    "destOverride": ["http", "tls"],
                     "metadataOnly": false
                 }
             },
@@ -175,7 +188,7 @@ ingress:
                 },
                 "sniffing": {
                     "enabled": true,
-                    "destOverride": ["http", "tls", "quic"],
+                    "destOverride": ["http", "tls"],
                     "metadataOnly": false
                 }
             },
@@ -195,18 +208,18 @@ ingress:
                 },
                 "sniffing": {
                     "enabled": true,
-                    "destOverride": ["http", "tls", "quic"],
+                    "destOverride": ["http", "tls"],
                     "metadataOnly": false
                 }
             }
         ],
-        "dns": {
-            "servers": ["https+local://8.8.8.8/dns-query"]
-        },
         "outbounds": [
             {
                 "protocol": "freedom",
-                "tag": "direct"
+                "tag": "direct",
+                "settings": {
+        "domainStrategy": "UseIPv4"
+      }
             },
             {
                 "protocol": "blackhole",
